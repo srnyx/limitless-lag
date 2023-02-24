@@ -1,0 +1,10 @@
+# The chance (amount) out of 100 (%) for a player to lag (that has it enabled) for a certain action
+# Maximum value is 100, minimum is 0, going above/below will default to 100/0
+lag-chances:
+  # This should be kept low, as it triggers everytime the player moves (even just a tiny bit)
+  # Default: 5 (5%)
+  move: 5
+  # Defaults: 20 (20%)
+  block:
+    break: 20
+    place: 20

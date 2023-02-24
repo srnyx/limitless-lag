@@ -1,0 +1,28 @@
+name: ${name}
+description: Simulate lag for players on your server
+authors:
+  - srnyx
+website: https://srnyx.xyz
+
+main: xyz.srnyx.limitlesslag.LimitlessLag
+version: ${version}
+
+permissions:
+  limitlesslag.command:
+    description: Allows the user to use the /lag command
+  limitlesslag.reload:
+    description: Allows the user to use the /lagreload command
+
+commands:
+  lag:
+    description: Simulate lag for players on your server
+    aliases:
+      - laggy
+      - laggify
+      - limitlesslag
+    permission: limitlesslag.command
+  lagreload:
+    description: Reload the plugin
+    aliases:
+      - limitlesslagreload
+    permission: limitlesslag.reload
