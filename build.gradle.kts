@@ -15,7 +15,8 @@ repositories {
 
 dependencies {
     compileOnly("org.spigotmc", "spigot-api", "1.11-R0.1-SNAPSHOT")
-	implementation("xyz.srnyx", "annoying-api", "2.0.5")
+	implementation("xyz.srnyx", "annoying-api", "2.1.2")
+    compileOnly("org.jetbrains", "annotations", "24.0.0")
 }
 
 tasks {
@@ -28,18 +29,11 @@ tasks {
     shadowJar {
         archiveClassifier.set("")
         relocate("xyz.srnyx.annoyingapi", "xyz.srnyx.limitlesslag.annoyingapi")
+        // Delete all folders in the build directory besides libs
         doLast {
-			// Delete all folders in the build directory besides libs
 			file("build").listFiles()?.forEach {
 				if (it.isDirectory && it.name != "libs") it.deleteRecursively()
 			}
-
-			// Move JAR file(s) to build folder then delete libs folder
-			copy {
-				from("build/libs")
-				into("build")
-			}
-			delete("build/libs")
         }
     }
 
