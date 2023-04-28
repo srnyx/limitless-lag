@@ -44,11 +44,11 @@ public class BlockListener implements AnnoyingListener {
         }
 
         // Check toggle & chance
-        if (!plugin.isToggled(player) || plugin.random.nextInt(101) > plugin.chanceBlockBreak) return;
+        if (!plugin.isToggled(player) || LimitlessLag.RANDOM.nextInt(101) > plugin.chanceBlockBreak) return;
         event.setCancelled(true);
 
         // Check delay
-        final int delay = plugin.random.nextInt(200);
+        final int delay = LimitlessLag.RANDOM.nextInt(200);
         if (delay > 100) return;
 
         // Delayed break
@@ -62,6 +62,6 @@ public class BlockListener implements AnnoyingListener {
 
     @EventHandler
     public void onBlockPlace(@NotNull BlockPlaceEvent event) {
-        if (plugin.isToggled(event.getPlayer()) && plugin.random.nextInt(101) < plugin.chanceBlockPlace) event.setCancelled(true);
+        if (plugin.isToggled(event.getPlayer()) && LimitlessLag.RANDOM.nextInt(101) < plugin.chanceBlockPlace) event.setCancelled(true);
     }
 }

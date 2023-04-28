@@ -13,30 +13,32 @@ import xyz.srnyx.limitlesslag.commands.ReloadCommand;
 import xyz.srnyx.limitlesslag.listeners.BlockListener;
 import xyz.srnyx.limitlesslag.listeners.PlayerListener;
 
+import java.util.Collections;
 import java.util.Random;
 
 
 public class LimitlessLag extends AnnoyingPlugin {
-    @NotNull public final Random random = new Random();
-    @NotNull private final AnnoyingResource config = new AnnoyingResource(this, "config.yml");
+    @NotNull public static final Random RANDOM = new Random();
+
     public int chanceMove = 5;
     public int chanceBlockBreak = 20;
     public int chanceBlockPlace = 20;
 
     public LimitlessLag() {
-        options.commandsToRegister.add(new LagCommand(this));
-        options.commandsToRegister.add(new ReloadCommand(this));
-        options.listenersToRegister.add(new BlockListener(this));
-        options.listenersToRegister.add(new PlayerListener(this));
+        super();
+        Collections.addAll(options.commandsToRegister,
+                new LagCommand(this),
+                new ReloadCommand(this));
+        Collections.addAll(options.listenersToRegister,
+                new BlockListener(this),
+                new PlayerListener(this));
         reload();
     }
 
     @Override
     public void reload() {
-        config.load();
-
         // lag-chances
-        final ConfigurationSection lagChances = config.getConfigurationSection("lag-chances");
+        final ConfigurationSection lagChances = new AnnoyingResource(this, "config.yml").getConfigurationSection("lag-chances");
         if (lagChances == null) return;
         chanceMove = fixChance(lagChances.getInt("move", 5));
 
@@ -47,6 +49,13 @@ public class LimitlessLag extends AnnoyingPlugin {
         chanceBlockPlace = fixChance(blockChances.getInt("place", 20));
     }
 
+    /**
+     * Make sure the chance is between 0 and 100
+     *
+     * @param   chance  the chance to fix
+     *
+     * @return          the fixed chance
+     */
     private int fixChance(int chance) {
         if (chance < 0) chance = 0;
         if (chance > 100) chance = 100;

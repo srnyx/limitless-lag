@@ -28,10 +28,10 @@ public class PlayerListener implements AnnoyingListener {
         // Check toggle, movement, and chance
         final Location from = event.getFrom();
         final Location to = event.getTo();
-        if (from.getX() == to.getX() && from.getY() == to.getY() && from.getZ() == to.getZ() || !plugin.isToggled(event.getPlayer()) || plugin.random.nextInt(101) >= plugin.chanceMove) return;
+        if (from.getX() == to.getX() && from.getY() == to.getY() && from.getZ() == to.getZ() || !plugin.isToggled(event.getPlayer()) || LimitlessLag.RANDOM.nextInt(101) >= plugin.chanceMove) return;
 
         // Set the new location to simulate lag
-        final double divider = plugin.random.nextInt(50) / 100.0 + 1.01;
+        final double divider = LimitlessLag.RANDOM.nextInt(50) / 100.0 + 1.01;
         final Location newTo = from.clone().add(
                 (to.getX() - from.getX()) / divider,
                 0,
