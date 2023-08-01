@@ -2,10 +2,9 @@ package xyz.srnyx.limitlesslag.commands;
 
 import org.jetbrains.annotations.NotNull;
 
-import xyz.srnyx.annoyingapi.AnnoyingMessage;
-import xyz.srnyx.annoyingapi.AnnoyingPlugin;
 import xyz.srnyx.annoyingapi.command.AnnoyingCommand;
 import xyz.srnyx.annoyingapi.command.AnnoyingSender;
+import xyz.srnyx.annoyingapi.message.AnnoyingMessage;
 
 import xyz.srnyx.limitlesslag.LimitlessLag;
 
@@ -18,7 +17,7 @@ public class ReloadCommand implements AnnoyingCommand {
     }
 
     @Override @NotNull
-    public AnnoyingPlugin getPlugin() {
+    public LimitlessLag getAnnoyingPlugin() {
         return plugin;
     }
 

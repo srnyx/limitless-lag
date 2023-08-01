@@ -27,7 +27,7 @@ public class BlockListener implements AnnoyingListener {
     }
 
     @Override @NotNull
-    public LimitlessLag getPlugin() {
+    public LimitlessLag getAnnoyingPlugin() {
         return plugin;
     }
 
@@ -55,7 +55,7 @@ public class BlockListener implements AnnoyingListener {
         blocks.add(location);
         new BukkitRunnable() {
             public void run() {
-                block.breakNaturally(player.getInventory().getItemInMainHand());
+                block.breakNaturally(player.getItemInHand());
             }
         }.runTaskLater(plugin, delay);
     }

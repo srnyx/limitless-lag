@@ -1,28 +1,32 @@
 name: ${name}
-description: Simulate lag for players on your server
+description: ${description}
 authors:
   - srnyx
-website: https://srnyx.xyz
+website: https://srnyx.com
 
-main: xyz.srnyx.limitlesslag.LimitlessLag
+main: ${group}.limitlesslag.LimitlessLag
 version: ${version}
+api-version: 1.13
 
-permissions:
-  limitlesslag.command:
-    description: Allows the user to use the /lag command
-  limitlesslag.reload:
-    description: Allows the user to use the /lagreload command
+softdepend:
+  - PlaceholderAPI
 
 commands:
+  lagreload:
+    description: Reloads the plugin
+    aliases:
+      - limitlesslagreload
+    permission: limitlesslag.reload
   lag:
-    description: Simulate lag for players on your server
+    description: Toggles lag for yourself or the specified player
     aliases:
       - laggy
       - laggify
       - limitlesslag
     permission: limitlesslag.command
-  lagreload:
-    description: Reload the plugin
-    aliases:
-      - limitlesslagreload
-    permission: limitlesslag.reload
+
+permissions:
+  limitlesslag.reload:
+    description: Allows the player to use /lagreload
+  limitlesslag.command:
+    description: Allows the player to use /lag

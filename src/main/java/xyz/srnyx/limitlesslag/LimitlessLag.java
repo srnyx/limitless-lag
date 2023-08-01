@@ -6,14 +6,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import xyz.srnyx.annoyingapi.AnnoyingPlugin;
+import xyz.srnyx.annoyingapi.PluginPlatform;
+import xyz.srnyx.annoyingapi.data.EntityData;
 import xyz.srnyx.annoyingapi.file.AnnoyingResource;
 
-import xyz.srnyx.limitlesslag.commands.LagCommand;
-import xyz.srnyx.limitlesslag.commands.ReloadCommand;
-import xyz.srnyx.limitlesslag.listeners.BlockListener;
-import xyz.srnyx.limitlesslag.listeners.PlayerListener;
-
-import java.util.Collections;
 import java.util.Random;
 
 
@@ -25,24 +21,29 @@ public class LimitlessLag extends AnnoyingPlugin {
     public int chanceBlockPlace = 20;
 
     public LimitlessLag() {
-        super();
-        Collections.addAll(options.commandsToRegister,
-                new LagCommand(this),
-                new ReloadCommand(this));
-        Collections.addAll(options.listenersToRegister,
-                new BlockListener(this),
-                new PlayerListener(this));
+        options
+                .pluginOptions(pluginOptions -> pluginOptions.updatePlatforms(
+                        PluginPlatform.modrinth("limitless-lag"),
+                        PluginPlatform.hangar(this, "srnyx"),
+                        PluginPlatform.spigot("109420")))
+                .bStatsOptions(bStatsOptions -> bStatsOptions.id(18875))
+                .registrationOptions
+                .automaticRegistration(automaticRegistration -> automaticRegistration.packages(
+                        "xyz.srnyx.limitlesslag.commands",
+                        "xyz.srnyx.limitlesslag.listeners"))
+                .papiExpansionToRegister(() -> new LimitlessPlaceholders(this));
+
         reload();
     }
 
     @Override
     public void reload() {
-        // lag-chances
+        // chanceMove
         final ConfigurationSection lagChances = new AnnoyingResource(this, "config.yml").getConfigurationSection("lag-chances");
         if (lagChances == null) return;
         chanceMove = fixChance(lagChances.getInt("move", 5));
 
-        // lag-chances.block
+        // chanceBlockBreak & chanceBlockPlace
         final ConfigurationSection blockChances = lagChances.getConfigurationSection("block");
         if (blockChances == null) return;
         chanceBlockBreak = fixChance(blockChances.getInt("break", 20));
@@ -57,9 +58,7 @@ public class LimitlessLag extends AnnoyingPlugin {
      * @return          the fixed chance
      */
     private int fixChance(int chance) {
-        if (chance < 0) chance = 0;
-        if (chance > 100) chance = 100;
-        return chance;
+        return Math.max(Math.min(chance, 100), 0);
     }
 
     /**
@@ -70,7 +69,7 @@ public class LimitlessLag extends AnnoyingPlugin {
      * @return          true if the player has limitless lag enabled
      */
     public boolean isToggled(@NotNull Player player) {
-        return player.getScoreboardTags().contains("limitlesslag");
+        return new EntityData(this, player).has("ll_lag");
     }
 
     /**
@@ -81,14 +80,16 @@ public class LimitlessLag extends AnnoyingPlugin {
      * @return          true if limitless lag was enabled
      */
     public boolean toggle(@NotNull Player player) {
+        final EntityData data = new EntityData(this, player);
+
         // Disable
         if (isToggled(player)) {
-            player.removeScoreboardTag("limitlesslag");
+            data.remove("ll_lag");
             return false;
         }
 
         // Enable
-        player.addScoreboardTag("limitlesslag");
+        data.set("ll_lag", true);
         return true;
     }
 }

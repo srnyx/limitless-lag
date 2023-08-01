@@ -5,10 +5,10 @@ import org.bukkit.entity.Player;
 
 import org.jetbrains.annotations.NotNull;
 
-import xyz.srnyx.annoyingapi.AnnoyingMessage;
-import xyz.srnyx.annoyingapi.AnnoyingPlugin;
 import xyz.srnyx.annoyingapi.command.AnnoyingCommand;
 import xyz.srnyx.annoyingapi.command.AnnoyingSender;
+import xyz.srnyx.annoyingapi.message.AnnoyingMessage;
+import xyz.srnyx.annoyingapi.message.DefaultReplaceType;
 
 import xyz.srnyx.limitlesslag.LimitlessLag;
 
@@ -21,7 +21,7 @@ public class LagCommand implements AnnoyingCommand {
     }
 
     @Override @NotNull
-    public AnnoyingPlugin getPlugin() {
+    public LimitlessLag getAnnoyingPlugin() {
         return plugin;
     }
 
@@ -38,28 +38,21 @@ public class LagCommand implements AnnoyingCommand {
         if (args.length == 0 && sender.checkPlayer()) {
             final Player player = sender.getPlayer();
             new AnnoyingMessage(plugin, "command.toggle")
-                    .replace("%state%", plugin.toggle(player), AnnoyingMessage.DefaultReplaceType.BOOLEAN)
+                    .replace("%state%", plugin.toggle(player), DefaultReplaceType.BOOLEAN)
                     .replace("%player%", player.getName())
                     .send(sender);
             return;
         }
 
         // <player>
-        if (args.length == 1) {
-            final Player player = Bukkit.getPlayer(args[0]);
-            if (player == null) {
-                new AnnoyingMessage(plugin, "error.invalid-argument")
-                        .replace("%argument%", args[0])
-                        .send(sender);
-                return;
-            }
-            new AnnoyingMessage(plugin, "command.toggle")
-                    .replace("%state%", plugin.toggle(player), AnnoyingMessage.DefaultReplaceType.BOOLEAN)
-                    .replace("%player%", player.getName())
-                    .send(sender);
+        final Player player = Bukkit.getPlayer(args[0]);
+        if (player == null) {
+            sender.invalidArgument(args[0]);
             return;
         }
-
-        new AnnoyingMessage(plugin, "error.invalid-arguments").send(sender);
+        new AnnoyingMessage(plugin, "command.toggle")
+                .replace("%state%", plugin.toggle(player), DefaultReplaceType.BOOLEAN)
+                .replace("%player%", player.getName())
+                .send(sender);
     }
 }
