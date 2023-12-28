@@ -9,8 +9,11 @@ import xyz.srnyx.annoyingapi.command.AnnoyingCommand;
 import xyz.srnyx.annoyingapi.command.AnnoyingSender;
 import xyz.srnyx.annoyingapi.message.AnnoyingMessage;
 import xyz.srnyx.annoyingapi.message.DefaultReplaceType;
+import xyz.srnyx.annoyingapi.utility.BukkitUtility;
 
 import xyz.srnyx.limitlesslag.LimitlessLag;
+
+import java.util.Set;
 
 
 public class LagCommand implements AnnoyingCommand {
@@ -54,5 +57,10 @@ public class LagCommand implements AnnoyingCommand {
                 .replace("%state%", plugin.toggle(player), DefaultReplaceType.BOOLEAN)
                 .replace("%player%", player.getName())
                 .send(sender);
+    }
+
+    @Override
+    public Set<String> onTabComplete(@NotNull AnnoyingSender sender) {
+        return sender.args.length == 1 ? BukkitUtility.getOnlinePlayerNames() : null;
     }
 }
