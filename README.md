@@ -2,8 +2,6 @@
 
 Ever wanted to torment your server members? Then this is definitely the perfect plugin for you! I tried my best to replicate the average lag a player would normally encounter, but it's not 100% perfect, so let me know if I missed anything.
 
-**ChatGPT:** "Limitless Lag" is a mischievous tool that allows admins to trick players into thinking they are experiencing lag when they are not. With this plugin, admins can simulate lag for those players, causing the affected player's movements to appear jerky and delayed. This can be a fun way for admins to play pranks on their friends or spice up gameplay for a short period of time. 
-
 **🐛 Bugs / 💡 Suggestions:** Please [open an issue](https://github.com/srnyx/limitless-lag/issues/new/choose) to report a bug or suggest an idea
 
 **🆘 Support:** Please [join the Discord](https://srnyx.com/discord) to get support
