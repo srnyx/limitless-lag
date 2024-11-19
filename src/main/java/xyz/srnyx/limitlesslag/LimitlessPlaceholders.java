@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import xyz.srnyx.annoyingapi.AnnoyingPAPIExpansion;
+import xyz.srnyx.annoyingapi.data.EntityData;
 
 
 public class LimitlessPlaceholders extends AnnoyingPAPIExpansion {
@@ -29,12 +30,12 @@ public class LimitlessPlaceholders extends AnnoyingPAPIExpansion {
     @Override @Nullable
     public String onPlaceholderRequest(@Nullable Player player, @NotNull String identifier) {
         // lag
-        if (player != null && identifier.equals("lag")) return String.valueOf(plugin.isToggled(player));
+        if (player != null && identifier.equals("lag")) return String.valueOf(new EntityData(plugin, player).has(LimitlessLag.KEY));
 
         // lag_PLAYER
         if (identifier.startsWith("lag_")) {
             final Player target = Bukkit.getPlayer(identifier.substring(4));
-            return target == null ? null : String.valueOf(plugin.isToggled(target));
+            return target == null ? null : String.valueOf(new EntityData(plugin, target).has(LimitlessLag.KEY));
         }
 
         return null;

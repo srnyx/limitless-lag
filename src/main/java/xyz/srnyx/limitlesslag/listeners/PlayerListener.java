@@ -8,18 +8,17 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 
 import xyz.srnyx.annoyingapi.AnnoyingListener;
+import xyz.srnyx.annoyingapi.AnnoyingPlugin;
 import xyz.srnyx.annoyingapi.data.EntityData;
-import xyz.srnyx.annoyingapi.events.AnnoyingPlayerMoveEvent;
+import xyz.srnyx.annoyingapi.events.AdvancedPlayerMoveEvent;
 
 import xyz.srnyx.limitlesslag.LimitlessLag;
 
-import java.util.Set;
-
-import static xyz.srnyx.annoyingapi.reflection.org.bukkit.entity.RefEntity.ENTITY_GET_SCOREBOARD_TAGS_METHOD;
-import static xyz.srnyx.annoyingapi.reflection.org.bukkit.entity.RefEntity.ENTITY_REMOVE_SCOREBOARD_TAG_METHOD;
+import java.util.Map;
+import java.util.logging.Level;
 
 
-public class PlayerListener implements AnnoyingListener {
+public class PlayerListener extends AnnoyingListener {
     @NotNull private final LimitlessLag plugin;
 
     public PlayerListener(@NotNull LimitlessLag plugin) {
@@ -32,9 +31,9 @@ public class PlayerListener implements AnnoyingListener {
     }
 
     @EventHandler
-    public void onPlayerMove(@NotNull AnnoyingPlayerMoveEvent event) {
+    public void onPlayerMove(@NotNull AdvancedPlayerMoveEvent event) {
         // Check toggle, movement, and chance
-        if (event.getMovementType().equals(AnnoyingPlayerMoveEvent.MovementType.ROTATION) || !plugin.isToggled(event.getPlayer()) || LimitlessLag.RANDOM.nextInt(101) >= plugin.chanceMove) return;
+        if (event.getMovementType().equals(AdvancedPlayerMoveEvent.MovementType.ROTATION) || !new EntityData(plugin, event.getPlayer()).has(LimitlessLag.KEY) || LimitlessLag.RANDOM.nextInt(101) >= plugin.config.lagChances.move) return;
 
         // Set the new location to simulate lag
         final Location from = event.getFrom();
@@ -49,19 +48,11 @@ public class PlayerListener implements AnnoyingListener {
         event.setTo(newTo);
     }
 
-    /**
-     * @deprecated  Used for old data conversion
-     */
-    @EventHandler @Deprecated
+    //TODO remove in future
+    @EventHandler
     public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
-        if (ENTITY_GET_SCOREBOARD_TAGS_METHOD == null || ENTITY_REMOVE_SCOREBOARD_TAG_METHOD == null) return;
         final Player player = event.getPlayer();
-        try {
-            if (!((Set<String>) ENTITY_GET_SCOREBOARD_TAGS_METHOD.invoke(player)).contains("limitlesslag")) return;
-            new EntityData(plugin, player).set("ll_lag", true);
-            ENTITY_REMOVE_SCOREBOARD_TAG_METHOD.invoke(player, "limitlesslag");
-        } catch (final ReflectiveOperationException e) {
-            e.printStackTrace();
-        }
+        final Map<String, String> failed = new EntityData(plugin, player).convertOldData(LimitlessLag.KEY);
+        if (failed == null || !failed.isEmpty()) AnnoyingPlugin.log(Level.SEVERE, "&cFailed to convert data for &4" + player.getName() + "&c: &4" + failed);
     }
 }

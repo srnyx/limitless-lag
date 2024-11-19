@@ -1,6 +1,5 @@
 package xyz.srnyx.limitlesslag.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +15,7 @@ import xyz.srnyx.limitlesslag.LimitlessLag;
 import java.util.Set;
 
 
-public class LagCommand implements AnnoyingCommand {
+public class LagCommand extends AnnoyingCommand {
     @NotNull private final LimitlessLag plugin;
 
     public LagCommand(@NotNull LimitlessLag plugin) {
@@ -35,10 +34,9 @@ public class LagCommand implements AnnoyingCommand {
 
     @Override
     public void onCommand(@NotNull AnnoyingSender sender) {
-        final String[] args = sender.args;
-
-        // No arguments
-        if (args.length == 0 && sender.checkPlayer()) {
+        // No arguments (toggle self)
+        if (sender.args.length == 0) {
+            if (!sender.checkPlayer()) return;
             final Player player = sender.getPlayer();
             new AnnoyingMessage(plugin, "command.toggle")
                     .replace("%state%", plugin.toggle(player), DefaultReplaceType.BOOLEAN)
@@ -48,15 +46,10 @@ public class LagCommand implements AnnoyingCommand {
         }
 
         // <player>
-        final Player player = Bukkit.getPlayer(args[0]);
-        if (player == null) {
-            sender.invalidArgument(args[0]);
-            return;
-        }
-        new AnnoyingMessage(plugin, "command.toggle")
+        sender.getArgumentOptionalFlat(0, BukkitUtility::getOfflinePlayer).ifPresent(player -> new AnnoyingMessage(plugin, "command.toggle")
                 .replace("%state%", plugin.toggle(player), DefaultReplaceType.BOOLEAN)
                 .replace("%player%", player.getName())
-                .send(sender);
+                .send(sender));
     }
 
     @Override

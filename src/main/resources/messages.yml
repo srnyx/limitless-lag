@@ -38,7 +38,5 @@ error:
   disabled-command: "%prefix%%se%%command%%pe% is disabled!@@%pe%%command%@@%command%"
 
 command:
-  # /lag
-  toggle: "%prefix%You have %s%%state==enabled//disabled%%p% lag for %s%%player%@@%p%%command%@@%command%" # %state==boolean%, %player%
-  # /lagreload
   reload: "%prefix%Plugin reloaded!@@%p%%command%@@%command%"
+  toggle: "%prefix%You have %s%%state==enabled//disabled%%p% lag for %s%%player%@@%p%%command%@@%command%" # %state==boolean%, %player%

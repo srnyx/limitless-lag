@@ -9,7 +9,7 @@ import xyz.srnyx.annoyingapi.message.AnnoyingMessage;
 import xyz.srnyx.limitlesslag.LimitlessLag;
 
 
-public class ReloadCommand implements AnnoyingCommand {
+public class ReloadCommand extends AnnoyingCommand {
     @NotNull private final LimitlessLag plugin;
 
     public ReloadCommand(@NotNull LimitlessLag plugin) {

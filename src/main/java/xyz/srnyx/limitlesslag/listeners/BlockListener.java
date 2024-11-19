@@ -11,6 +11,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import xyz.srnyx.annoyingapi.AnnoyingListener;
+import xyz.srnyx.annoyingapi.data.EntityData;
 
 import xyz.srnyx.limitlesslag.LimitlessLag;
 
@@ -18,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class BlockListener implements AnnoyingListener {
+public class BlockListener extends AnnoyingListener {
     @NotNull private final LimitlessLag plugin;
     @NotNull private final Set<Location> blocks = new HashSet<>();
 
@@ -44,7 +45,7 @@ public class BlockListener implements AnnoyingListener {
         }
 
         // Check toggle & chance
-        if (!plugin.isToggled(player) || LimitlessLag.RANDOM.nextInt(101) > plugin.chanceBlockBreak) return;
+        if (!new EntityData(plugin, player).has(LimitlessLag.KEY) || LimitlessLag.RANDOM.nextInt(101) > plugin.config.lagChances.block.breakChance) return;
         event.setCancelled(true);
 
         // Check delay
@@ -62,6 +63,6 @@ public class BlockListener implements AnnoyingListener {
 
     @EventHandler
     public void onBlockPlace(@NotNull BlockPlaceEvent event) {
-        if (plugin.isToggled(event.getPlayer()) && LimitlessLag.RANDOM.nextInt(101) < plugin.chanceBlockPlace) event.setCancelled(true);
+        if (new EntityData(plugin, event.getPlayer()).has(LimitlessLag.KEY) && LimitlessLag.RANDOM.nextInt(101) < plugin.config.lagChances.block.placeChance) event.setCancelled(true);
     }
 }
