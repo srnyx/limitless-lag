@@ -1,30 +1,42 @@
 package xyz.srnyx.limitlesslag;
 
-import org.jetbrains.annotations.NotNull;
+import eu.okaeri.configs.annotation.Comment;
+import eu.okaeri.validator.annotation.Max;
+import eu.okaeri.validator.annotation.Min;
+import eu.okaeri.validator.annotation.NotNull;
+import xyz.srnyx.annoyingapi.file.okaeri.RootConfig;
+import xyz.srnyx.annoyingapi.file.okaeri.SubConfig;
 
-import xyz.srnyx.annoyingapi.file.AnnoyingResource;
 
+public class ConfigYml extends RootConfig {
+    @Comment("The chance (amount) out of 100 (%) for a player to lag (that has it enabled) for a certain action")
+    @Comment("Maximum value is 100, minimum is 0")
+    @NotNull public LagChances lag_chances = new LagChances(this);
 
-public class ConfigYml {
-    @NotNull private final AnnoyingResource config;
-    @NotNull public final LagChances lagChances;
-
-    public ConfigYml(@NotNull LimitlessLag plugin) {
-        config = new AnnoyingResource(plugin, "config.yml");
-        lagChances = new LagChances();
-    }
-
-    public class LagChances {
-        public int move = fixChance(config.getInt("lag-chances.move", 1));
-        @NotNull public final Block block = new Block();
-
-        public class Block {
-            public int breakChance = fixChance(config.getInt("lag-chances.block.break", 20));
-            public int placeChance = fixChance(config.getInt("lag-chances.block.place", 20));
+    public static class LagChances extends SubConfig<ConfigYml, ConfigYml> {
+        public LagChances(@org.jetbrains.annotations.NotNull ConfigYml defaultsParent) {
+            super(defaultsParent);
         }
-    }
 
-    private static int fixChance(int chance) {
-        return Math.max(Math.min(chance, 100), 0);
+        @Comment("This should be kept low, as it triggers everytime the player moves (even just a tiny bit)")
+        @Comment("Default: 1 (1%)")
+        @Min(0) @Max(100)
+        public int move = 1;
+
+        @Comment
+        @Comment("Defaults: 20 (20%)")
+        @NotNull public Block block = new Block(this);
+
+        public static class Block extends SubConfig<ConfigYml, LagChances> {
+            public Block(@org.jetbrains.annotations.NotNull LagChances defaultsParent) {
+                super(defaultsParent);
+            }
+
+            @Min(0) @Max(100)
+            public int break_chance = 20;
+
+            @Min(0) @Max(100)
+            public int place_chance = 20;
+        }
     }
 }

@@ -1,53 +1,51 @@
 package xyz.srnyx.limitlesslag;
 
 import org.bukkit.OfflinePlayer;
-
 import org.jetbrains.annotations.NotNull;
-
+import org.jetbrains.annotations.Nullable;
 import xyz.srnyx.annoyingapi.AnnoyingPlugin;
-import xyz.srnyx.annoyingapi.PluginPlatform;
 import xyz.srnyx.annoyingapi.data.StringData;
-
-import java.util.Random;
+import xyz.srnyx.limitlesslag.messages.LLMessagesProvider;
+import xyz.srnyx.limitlesslag.stats.FastStats;
 
 
 public class LimitlessLag extends AnnoyingPlugin {
     @NotNull public static final String KEY = "ll_lag";
-    @NotNull public static final Random RANDOM = new Random();
 
     public ConfigYml config;
 
     public LimitlessLag() {
         options
-                .pluginOptions(pluginOptions -> pluginOptions.updatePlatforms(
-                        PluginPlatform.modrinth("TwwhAG4s"),
-                        PluginPlatform.hangar(this),
-                        PluginPlatform.spigot("109420")))
-                .bStatsOptions(bStatsOptions -> bStatsOptions.id(18875))
+                .statsOptions(statsOptions -> statsOptions
+                        .bStats(bStatsOptions -> bStatsOptions.id(18875))
+                        .fastStats(fastStatsOptions -> fastStatsOptions.loader(FastStats.class)))
                 .dataOptions(dataOptions -> dataOptions
-                        .enabled(true)
                         .entityDataColumns(KEY))
-                .registrationOptions
-                .automaticRegistration(automaticRegistration -> automaticRegistration.packages(
-                        "xyz.srnyx.limitlesslag.commands",
-                        "xyz.srnyx.limitlesslag.listeners"))
-                .papiExpansionToRegister(() -> new LimitlessPlaceholders(this));
+                .registrationOptions.papiExpansionToRegister(() -> new LimitlessPlaceholders(this));
+    }
 
-        reload();
+    @Override @NotNull
+    public LLMessagesProvider getMessages() {
+        return (LLMessagesProvider) super.getMessages();
+    }
+
+    @Override
+    public void load() {
+        config = configLoader.build(builder -> builder.config(new ConfigYml()));
     }
 
     @Override
     public void reload() {
-        config = new ConfigYml(this);
+        config.reload();
     }
 
     /**
      * @return  true if limitless lag was enabled
      */
-    public boolean toggle(@NotNull OfflinePlayer player) {
+    public boolean toggle(@NotNull OfflinePlayer player, @Nullable Boolean state) {
         final StringData data = new StringData(this, player);
-        final boolean has = data.has(KEY);
-        data.set(KEY, has ? null : true);
-        return !has;
+        if (state == null) state = !data.has(KEY);
+        data.set(KEY, state ? true : null);
+        return state;
     }
 }

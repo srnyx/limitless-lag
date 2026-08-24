@@ -1,39 +1,18 @@
 package xyz.srnyx.limitlesslag.commands;
 
 import org.jetbrains.annotations.NotNull;
-
-import xyz.srnyx.annoyingapi.command.AnnoyingCommand;
 import xyz.srnyx.annoyingapi.command.AnnoyingSender;
-import xyz.srnyx.annoyingapi.message.AnnoyingMessage;
-
 import xyz.srnyx.limitlesslag.LimitlessLag;
 
 
-public class ReloadCommand extends AnnoyingCommand {
-    @NotNull private final LimitlessLag plugin;
-
+public class ReloadCommand extends xyz.srnyx.limitlesslag.commands.generated.LagreloadCmdGen {
     public ReloadCommand(@NotNull LimitlessLag plugin) {
-        this.plugin = plugin;
-    }
-
-    @Override @NotNull
-    public LimitlessLag getAnnoyingPlugin() {
-        return plugin;
-    }
-
-    @Override @NotNull
-    public String getName() {
-        return "lagreload";
-    }
-
-    @Override @NotNull
-    public String getPermission() {
-        return "limitlesslag.reload";
+        super(plugin);
     }
 
     @Override
     public void onCommand(@NotNull AnnoyingSender sender) {
         plugin.reloadPlugin();
-        new AnnoyingMessage(plugin, "command.reload").send(sender);
+        plugin.getMessages().get().command.reload.newMessage().send(sender);
     }
 }

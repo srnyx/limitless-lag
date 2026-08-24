@@ -1,35 +1,19 @@
 package xyz.srnyx.limitlesslag.commands;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-
 import org.jetbrains.annotations.NotNull;
-
-import xyz.srnyx.annoyingapi.command.AnnoyingCommand;
 import xyz.srnyx.annoyingapi.command.AnnoyingSender;
-import xyz.srnyx.annoyingapi.message.AnnoyingMessage;
 import xyz.srnyx.annoyingapi.message.DefaultReplaceType;
 import xyz.srnyx.annoyingapi.utility.BukkitUtility;
-
 import xyz.srnyx.limitlesslag.LimitlessLag;
 
-import java.util.Set;
+import java.util.List;
 
 
-public class LagCommand extends AnnoyingCommand {
-    @NotNull private final LimitlessLag plugin;
-
+public class LagCommand extends xyz.srnyx.limitlesslag.commands.generated.LagCmdGen {
     public LagCommand(@NotNull LimitlessLag plugin) {
-        this.plugin = plugin;
-    }
-
-    @Override @NotNull
-    public LimitlessLag getAnnoyingPlugin() {
-        return plugin;
-    }
-
-    @Override @NotNull
-    public String getPermission() {
-        return "limitlesslag.command";
+        super(plugin);
     }
 
     @Override
@@ -38,22 +22,37 @@ public class LagCommand extends AnnoyingCommand {
         if (sender.args.length == 0) {
             if (!sender.checkPlayer()) return;
             final Player player = sender.getPlayer();
-            new AnnoyingMessage(plugin, "command.toggle")
-                    .replace("%state%", plugin.toggle(player), DefaultReplaceType.BOOLEAN)
+            plugin.getMessages().get().command.toggle.newMessage()
+                    .replace("%state%", plugin.toggle(player, null), DefaultReplaceType.BOOLEAN)
                     .replace("%player%", player.getName())
                     .send(sender);
             return;
         }
 
         // <player>
-        sender.getArgumentOptionalFlat(0, BukkitUtility::getOfflinePlayer).ifPresent(player -> new AnnoyingMessage(plugin, "command.toggle")
-                .replace("%state%", plugin.toggle(player), DefaultReplaceType.BOOLEAN)
-                .replace("%player%", player.getName())
-                .send(sender));
+        final List<OfflinePlayer> players = sender
+                .getSelector(0, OfflinePlayer.class)
+                .orElseFlatSingle(BukkitUtility::getOfflinePlayer);
+        if (players == null) return;
+
+        // <on|off>
+        final Boolean state = sender.getArgumentOptional(1)
+                .map(arg -> arg.equalsIgnoreCase("on"))
+                .orElse(null);
+
+        // Toggle for players
+        for (final OfflinePlayer player : players) {
+            plugin.getMessages().get().command.toggle.newMessage()
+                    .replace("%state%", plugin.toggle(player, state), DefaultReplaceType.BOOLEAN)
+                    .replace("%player%", player.getName())
+                    .send(sender);
+        }
     }
 
     @Override
-    public Set<String> onTabComplete(@NotNull AnnoyingSender sender) {
-        return sender.args.length == 1 ? BukkitUtility.getOnlinePlayerNames() : null;
+    public List<String> onTabComplete(@NotNull AnnoyingSender sender) {
+        if (sender.args.length == 1) return sender.withSelectorKeys(BukkitUtility.getOnlinePlayerNames(), OfflinePlayer.class);
+        if (sender.args.length == 2) return List.of("on", "off");
+        return null;
     }
 }

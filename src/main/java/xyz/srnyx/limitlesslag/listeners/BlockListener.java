@@ -7,12 +7,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import org.jetbrains.annotations.NotNull;
-
 import xyz.srnyx.annoyingapi.AnnoyingListener;
 import xyz.srnyx.annoyingapi.data.EntityData;
-
+import xyz.srnyx.annoyingapi.libs.javautilities.MiscUtility;
 import xyz.srnyx.limitlesslag.LimitlessLag;
 
 import java.util.HashSet;
@@ -45,11 +43,11 @@ public class BlockListener extends AnnoyingListener {
         }
 
         // Check toggle & chance
-        if (!new EntityData(plugin, player).has(LimitlessLag.KEY) || LimitlessLag.RANDOM.nextInt(101) > plugin.config.lagChances.block.breakChance) return;
+        if (!new EntityData(plugin, player).has(LimitlessLag.KEY) || MiscUtility.RANDOM.nextInt(101) > plugin.config.lag_chances.block.break_chance) return;
         event.setCancelled(true);
 
         // Check delay
-        final int delay = LimitlessLag.RANDOM.nextInt(200);
+        final int delay = MiscUtility.RANDOM.nextInt(200);
         if (delay > 100) return;
 
         // Delayed break
@@ -63,6 +61,6 @@ public class BlockListener extends AnnoyingListener {
 
     @EventHandler
     public void onBlockPlace(@NotNull BlockPlaceEvent event) {
-        if (new EntityData(plugin, event.getPlayer()).has(LimitlessLag.KEY) && LimitlessLag.RANDOM.nextInt(101) < plugin.config.lagChances.block.placeChance) event.setCancelled(true);
+        if (new EntityData(plugin, event.getPlayer()).has(LimitlessLag.KEY) && MiscUtility.RANDOM.nextInt(101) < plugin.config.lag_chances.block.place_chance) event.setCancelled(true);
     }
 }
