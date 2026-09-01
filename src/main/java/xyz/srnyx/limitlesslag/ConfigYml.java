@@ -6,11 +6,13 @@ import eu.okaeri.validator.annotation.Min;
 import eu.okaeri.validator.annotation.NotNull;
 import xyz.srnyx.annoyingapi.file.okaeri.RootConfig;
 import xyz.srnyx.annoyingapi.file.okaeri.SubConfig;
+import xyz.srnyx.annoyingapi.stats.Stat;
 
 
 public class ConfigYml extends RootConfig {
     @Comment("The chance (amount) out of 100 (%) for a player to lag (that has it enabled) for a certain action")
     @Comment("Maximum value is 100, minimum is 0")
+    @Stat
     @NotNull public LagChances lag_chances = new LagChances(this);
 
     public static class LagChances extends SubConfig<ConfigYml, ConfigYml> {
@@ -20,7 +22,7 @@ public class ConfigYml extends RootConfig {
 
         @Comment("This should be kept low, as it triggers everytime the player moves (even just a tiny bit)")
         @Comment("Default: 1 (1%)")
-        @Min(0) @Max(100)
+        @Min(0) @Max(100) @Stat
         public int move = 1;
 
         @Comment
@@ -32,10 +34,10 @@ public class ConfigYml extends RootConfig {
                 super(defaultsParent);
             }
 
-            @Min(0) @Max(100)
+            @Min(0) @Max(100) @Stat
             public int break_chance = 20;
 
-            @Min(0) @Max(100)
+            @Min(0) @Max(100) @Stat
             public int place_chance = 20;
         }
     }
