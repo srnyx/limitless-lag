@@ -1,6 +1,6 @@
 plugins {
     java
-    id("xyz.srnyx.gradle-galaxy") version "c151767"
+    id("xyz.srnyx.gradle-galaxy") version "4.0.0"
     id("com.gradleup.shadow") version "9.6.1"
     id("me.modmuss50.mod-publish-plugin") version "675051c"
     id("io.papermc.hangar-publish-plugin") version "0.1.4"
@@ -13,7 +13,7 @@ description = "Simulate lag for players on your server"
 galaxy {
     minecraft {
         spigotAPI("1.8.8")
-        annoyingAPI("47cd350")
+        annoyingAPI("6.0.2")
 
         dependency {
             optional {
